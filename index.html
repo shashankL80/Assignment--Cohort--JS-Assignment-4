@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Book Library</title>
 </head>
+
 <body>
-    
+    <div id="root">
+
+        <!-- NAV -->
+        <div id="nav">
+
+            <div id="nav-left">
+                <div id="logo-container"><img id="logo-brand" src="./assets/img/logo.png" alt="Book Lib"></div>
+                <h4 id="nav-heading">Book Library</h4>
+            </div>
+
+            <div id="nav-right">
+                <input type="text" name="" id="search-books-input" placeholder="Search Books">
+                <div id="dark-light-mode-logo-container">
+                    <img id="dark-light-mode-logo" src="./assets/img/lightMode.png" alt="Book Lib">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DISPLAY BOOKS -->
+        <div id="display-books-container">
+
+            <!-- FILTERS -->
+            <div id="feat-sorting-view">
+                <div id="view-select">
+                    <select name="view-select" id="view-select">
+                        <option value="list">List</option>
+                        <option value="grid">Grid</option>
+                    </select>
+                </div>
+
+                <div id="sort-select">
+                    <select name="sort-select" id="sort-select">
+                        <option value="ascending">Sort Ascending</option>
+                        <option value="descending">Sort Descending</option>
+                    </select>
+                </div>
+
+                <div id="based-on-select">
+                    <select name="based-on-select" id="based-on-select">
+                        <option value="title">Title</option>
+                        <option value="publish-date">Publish Date</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CONTENT-BOOKS -->
+
+            <div id="book-container">
+
+            </div>
+
+            <!-- PAGINATION -->
+
+            <div id="pagination">
+                
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="./index.js"></script>
 </body>
+
 </html>

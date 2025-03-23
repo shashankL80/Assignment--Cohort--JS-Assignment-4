@@ -1,0 +1,64 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+#logo-container,
+#logo-brand {
+  height: 70px;
+  width: 70px;
+}
+
+#dark-light-mode-logo,
+#dark-light-mode-logo-container {
+  height: 48px;
+  width: 48px;
+}
+
+#nav-heading {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+#nav,
+#nav-left,
+#nav-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#search-books-input {
+  padding: 5px;
+  width: 300px;
+  border-radius: 4px;
+
+}
+#feat-sorting-view {
+    border: 1px solid red;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+}
+
+#view-select{
+    padding: 3px;
+    width: 70px;
+}
+
+#sort-select, #based-on-select{
+    padding: 3px;
+    width: 150px;
+}
