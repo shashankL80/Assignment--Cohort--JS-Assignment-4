@@ -12,6 +12,16 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.dark-mode {
+  background-color: rgb(28, 28, 34);
+  color: rgb(252, 255, 240);
+}
+
+.light-mode {
+  background-color: white;
+  color: black;
+}
+
 #logo-container,
 #logo-brand {
   height: 70px;
@@ -20,8 +30,9 @@ body {
 
 #dark-light-mode-logo,
 #dark-light-mode-logo-container {
-  height: 48px;
-  width: 48px;
+  height: 32px;
+  width: 32px;
+  cursor: pointer;
 }
 
 #nav-heading {
@@ -42,23 +53,106 @@ body {
   padding: 5px;
   width: 300px;
   border-radius: 4px;
-
 }
 #feat-sorting-view {
-    border: 1px solid red;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    gap: 10px;
+  border: 1px solid red;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
 }
 
-#view-select{
-    padding: 3px;
-    width: 70px;
+#view-select {
+  padding: 3px;
+  width: 70px;
 }
 
-#sort-select, #based-on-select{
-    padding: 3px;
-    width: 150px;
+#sort-select,
+#based-on-select {
+  padding: 3px;
+  width: 150px;
+}
+
+.book-container-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.book-container-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.card-list {
+  padding: 6px;
+  border: 1px solid red;
+  display: flex;
+  gap: 20px;
+}
+
+.card-grid {
+  padding: 6px;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+}
+
+.book-image {
+  max-height: 173px;
+  object-fit: contain;
+}
+
+.book-information {
+  padding: 6px;
+  border: 1px solid red;
+  width: 100%;
+}
+
+.book-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.book-authors {
+  padding: 6px;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.book-rating {
+  padding: 6px;
+  margin-top: 3px;
+  font-size: 20px;
+  color: rgb(228, 194, 0);
+}
+
+.no-book-rating {
+  padding: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgb(142, 138, 138);
+  border: 1px solid rgb(142, 138, 138);
+}
+
+.book-description {
+  padding: 6px;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.view-more-button {
+  border: none;
+  color: blue;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: white;
+  &:hover {
+    text-decoration: underline;
+    font-weight: 500;
+  }
 }
