@@ -32,28 +32,41 @@
         <div id="display-books-container">
 
             <!-- FILTERS -->
-            <div id="feat-sorting-view">
-                <div id="view-select-container">
-                    <select name="view-select" id="view-select">
-                        <option value="list">List</option>
-                        <option value="grid">Grid</option>
+            <div id="container-functionality">
+                <div id="feat-sorting-view">
+                    <div id="view-select-container">
+                        <select name="view-select" id="view-select">
+                            <option value="list">List</option>
+                            <option value="grid">Grid</option>
+                        </select>
+                    </div>
+                    <span>Sort : </span>
+                    <div id="based-on-select-container">
+                        <select name="based-on-select" id="based-on-select">
+                            <option value="title">Title</option>
+                            <option value="publishedDate">Publish Date</option>
+                        </select>
+                    </div>
+                    <span>in</span>
+                    <div id="sort-select-container">
+                        <select name="sort-select" id="sort-select">
+                            <option value="ascending">Ascending</option>
+                            <option value="descending">Descending</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="pagination-container">
+                    <span>Items Per Page : </span>
+                    <!-- <input type="text" name="items-per-page" id="items-per-page" value="10"> -->
+                    <select name="items-per-page" id="items-per-page">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
-                <span>Sort : </span>
-                <div id="based-on-select-container">
-                    <select name="based-on-select" id="based-on-select">
-                        <option value="title">Title</option>
-                        <option value="publishedDate">Publish Date</option>
-                    </select>
-                </div>
-                <span>in</span>
-                <div id="sort-select-container">
-                    <select name="sort-select" id="sort-select">
-                        <option value="ascending">Ascending</option>
-                        <option value="descending">Descending</option>
-                    </select>
-                </div>
-                
+
             </div>
 
             <!-- CONTENT-BOOKS -->
@@ -65,7 +78,7 @@
             <!-- PAGINATION -->
 
             <div id="pagination">
-                
+
             </div>
 
 

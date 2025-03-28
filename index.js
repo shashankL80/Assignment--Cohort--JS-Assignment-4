@@ -1,11 +1,10 @@
 import {
   addClassListsToElement,
-  createStarsBasedOnRating,
   sortObjWithStringVal,
   debounce,
 } from "./utility/common.js";
 
-let page, limit, inc, query;
+let inc = "kind%252Cid%252Cetag%252CvolumeInfo";
 let result;
 
 const book_container = document.getElementById("book-container");
@@ -26,19 +25,25 @@ const parentContainer = document.getElementById("root");
 const darkLightModeButton = document.getElementById("dark-light-mode-logo");
 let darkMode = false;
 
-// console.log(viewTypeValue);
+const itemsPerPageInput = document.getElementById("items-per-page");
+const paginationContainer = document.getElementById("pagination-container");
 
-async function fetchBooks(searchBookValue) {
-  const URL = `https://api.freeapi.app/api/v1/public/books?
-  page=${page || `1`}&
-  limit=${limit || `10`}&
-  inc=${inc || `kind%252Cid%252Cetag%252CvolumeInfo`}&
-  query=${searchBookValue}`;
+const root = document.querySelector(":root");
+
+async function fetchBooks(searchBookValue, limit, page) {
+  console.log("api call mmmm");
+  const URL = `https://api.freeapi.app/api/v1/public/books?page=${
+    page || `1`
+  }&limit=${limit || `10`}&inc=${
+    inc || `kind%252Cid%252Cetag%252CvolumeInfo`
+  }&query=${searchBookValue}`;
 
   try {
-    const response = await fetch(URL);
-    const data = await response.json();
-    result = data;
+    if (URL) {
+      const response = await fetch(URL);
+      const data = await response.json();
+      result = data;
+    }
   } catch (error) {
     throw error;
   }
@@ -49,56 +54,156 @@ darkLightModeButton.addEventListener("click", () => {
     parentContainer.classList.add("dark-mode");
     parentContainer.classList.remove("light-mode");
     darkLightModeButton.src = "./assets/img/lightMode.png";
+    root.style.setProperty("--theme", "dark-mode");
   } else {
     parentContainer.classList.add("light-mode");
     parentContainer.classList.remove("dark-mode");
     darkLightModeButton.src = "./assets/img/darkMode.png";
+    root.style.setProperty("--theme", "light-mode");
   }
 
   darkMode = !darkMode;
 });
 
-const initialize = (searchBookValue) => {
-  fetchBooks(searchBookValue).then(() => {
+const initialize = (searchBookValue = "", limit, page) => {
+  fetchBooks(searchBookValue, limit, page).then(() => {
     book_container.textContent = "";
     let books = result?.data?.data;
-    console.log(books);
+    let paginationInfo = result?.data;
+    // console.log(books);
     renderBooks(books);
-
-    basedOnSelect.addEventListener("change", () => {
-      book_container.textContent = "";
-      basedOnSelectValue = basedOnSelect.value;
-      const sortedBooks = sortObjWithStringVal(
-        books,
-        basedOnSelectValue,
-        sortingValue
-      );
-      console.log("sortedBooks", sortedBooks);
-      renderBooks(sortedBooks);
-    });
-
-    sorting.addEventListener("change", function () {
-      book_container.textContent = "";
-      sortingValue = sorting.value;
-      const sortedBooks = sortObjWithStringVal(
-        books,
-        basedOnSelectValue,
-        sortingValue
-      );
-      renderBooks(sortedBooks);
-    });
+    updatePaginationUI(paginationInfo);
   });
 };
-initialize();
 
-//debounce
+function updatePaginationUI(paginationInfo) {
+  let start =
+    paginationInfo?.page === 1
+      ? 1
+      : paginationInfo?.limit * (paginationInfo?.page - 1) + 1;
+  let end =
+    paginationInfo?.page === 1
+      ? paginationInfo?.limit
+      : paginationInfo?.limit * paginationInfo?.page;
+
+  if (Number(end) > Number(paginationInfo?.totalItems)) {
+    end = paginationInfo?.totalItems;
+  }
+
+  // console.log(paginationInfo?.page, start, end);
+
+  if (
+    Array.from(document.getElementsByClassName("pagination-range")).length > 0
+  ) {
+    const toBeRemovedPaginationRange = Array.from(
+      document.getElementsByClassName("pagination-range")
+    )?.[0];
+    toBeRemovedPaginationRange.remove();
+  }
+
+  const paginationRange = document.createElement("div");
+  paginationRange.textContent = `${start}-${end} of ${paginationInfo?.totalItems}`;
+  paginationContainer.appendChild(paginationRange);
+  addClassListsToElement(["pagination-range"], paginationRange);
+
+  // console.log(paginationContainer);
+
+  if (
+    Array.from(document.getElementsByClassName("next-page-button")).length > 0
+  ) {
+    document.querySelector(".next-page-button")?.remove();
+  }
+
+  if (
+    Array.from(document.getElementsByClassName("prev-page-button")).length > 0
+  ) {
+    document.querySelector(".prev-page-button")?.remove();
+  }
+
+  const nextPageButton = document.createElement("button");
+  nextPageButton.textContent = `>`;
+  const prevPageButton = document.createElement("button");
+  prevPageButton.textContent = `<`;
+  addClassListsToElement(["next-page-button"], nextPageButton);
+  addClassListsToElement(["prev-page-button"], prevPageButton);
+
+  nextPageButton.disabled = !paginationInfo?.nextPage;
+  prevPageButton.disabled = !paginationInfo?.previousPage;
+
+  paginationContainer.appendChild(prevPageButton);
+  paginationContainer.appendChild(nextPageButton);
+
+  nextPageButton.addEventListener("click", () => {
+    if (!paginationInfo?.nextPage) {
+      nextPageButton.disabled = true;
+      return;
+    }
+    const search = searchBooksInput.value;
+    const limit = itemsPerPageInput.value;
+    const currentPage = paginationInfo?.page || 1;
+    initialize(search, limit, `${Number(currentPage) + 1}`);
+  });
+
+  prevPageButton.addEventListener("click", () => {
+    if (!paginationInfo?.previousPage) {
+      prevPageButton.disabled = true;
+      return;
+    }
+    const search = searchBooksInput.value;
+    const limit = itemsPerPageInput.value;
+    initialize(search, limit, `${Number(paginationInfo?.page) - 1}`);
+  });
+}
+
+basedOnSelect.addEventListener("change", () => {
+  book_container.textContent = "";
+  basedOnSelectValue = basedOnSelect.value;
+  const sortedBooks = sortObjWithStringVal(
+    books,
+    basedOnSelectValue,
+    sortingValue
+  );
+  renderBooks(sortedBooks);
+});
+
+sorting.addEventListener("change", function () {
+  book_container.textContent = "";
+  sortingValue = sorting.value;
+  const sortedBooks = sortObjWithStringVal(
+    books,
+    basedOnSelectValue,
+    sortingValue
+  );
+  renderBooks(sortedBooks);
+});
+
 const debouncedInitialize = debounce(initialize, 1000);
+
 searchBooksInput.addEventListener("keyup", () => {
   const searchBookValue = searchBooksInput.value;
-  console.log(searchBookValue);
-  debouncedInitialize(searchBookValue);
-  // initialize(searchBookValue)
+
+  debouncedInitialize(
+    searchBookValue,
+    itemsPerPageInput.value,
+    `${Number(paginationInfo?.page)}`
+  );
 });
+
+itemsPerPageInput.addEventListener("change", () => {
+  const itemsPerPageInputVal = itemsPerPageInput.value;
+  console.log(itemsPerPageInputVal);
+  setTimeout(
+    () =>
+      initialize(
+        searchBooksInput.value,
+        itemsPerPageInputVal,
+        `${Number(paginationInfo?.page)}`
+      ),
+    0
+  );
+});
+
+initialize();
 
 const renderBooks = (books) => {
   books?.forEach((book, index) => {
@@ -115,15 +220,23 @@ const renderBooks = (books) => {
     addClassListsToElement(["book-title"], bookTitle);
 
     const bookAuthor = document.createElement("div");
-    bookAuthor.textContent = `Authors : ${book?.volumeInfo?.authors
+    bookAuthor.textContent = `Author(s) : ${book?.volumeInfo?.authors
       ?.toString()
       ?.replaceAll(",", ", ")} `;
     addClassListsToElement(["book-authors"], bookAuthor);
 
-    const rating = document.createElement("div");
-    const ratingCount = book?.volumeInfo?.ratingsCount;
-    createStarsBasedOnRating(ratingCount, rating);
-    addClassListsToElement(["book-rating"], rating);
+    const publishedDateElement = document.createElement("div");
+    const publishedDate = book?.volumeInfo?.publishedDate;
+    publishedDateElement.textContent = publishedDate
+      ?.split("-")
+      ?.reverse()
+      ?.join("-");
+    addClassListsToElement(["book-published-date"], publishedDateElement);
+
+    const publisherElement = document.createElement("div");
+    const publisher = book?.volumeInfo?.publisher;
+    publisherElement.textContent = `Publisher : ${publisher}`;
+    addClassListsToElement(["book-publisher"], publisherElement);
 
     const description = document.createElement("div");
     const viewMoreButton = document.createElement("button");
@@ -150,19 +263,18 @@ const renderBooks = (books) => {
     const bookInformation = document.createElement("div");
     bookInformation.appendChild(bookTitle);
     bookInformation.appendChild(bookAuthor);
-    bookInformation.appendChild(rating);
+    bookInformation.appendChild(publishedDateElement);
+    bookInformation.appendChild(publisherElement);
     bookInformation.appendChild(description);
 
     addClassListsToElement(["book-information"], bookInformation);
 
     card.appendChild(bookImage);
     card.appendChild(bookInformation);
-    addClassListsToElement(["card-list"], card);
     book_container.append(card);
 
-    viewType.addEventListener("change", () => {
+    function decideViewType() {
       viewTypeValue = viewType.value;
-      console.log(viewTypeValue);
       switch (viewTypeValue) {
         case "list":
           book_container.classList.remove("book-container-grid");
@@ -177,6 +289,11 @@ const renderBooks = (books) => {
           addClassListsToElement(["card-grid"], card);
           break;
       }
+    }
+    decideViewType();
+
+    viewType.addEventListener("change", () => {
+      decideViewType();
     });
   });
 };

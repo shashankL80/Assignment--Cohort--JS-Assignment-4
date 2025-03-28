@@ -4,16 +4,16 @@ export const addClassListsToElement = (classListArray = [], targetElement) => {
   }
 };
 
-export const createStarsBasedOnRating = (ratingCount, ratingElement) => {
-  if (!ratingCount) {
-    ratingElement.textContent = `Rating Not Available`;
-    addClassListsToElement(["no-book-rating"], ratingElement);
-    return;
-  }
-  for (let i = 0; i < ratingCount; i++) {
-    ratingElement.textContent += `★`;
-  }
-};
+// export const createStarsBasedOnRating = (ratingCount, ratingElement) => {
+//   if (!ratingCount) {
+//     ratingElement.textContent = `Rating Not Available`;
+//     addClassListsToElement(["no-book-rating"], ratingElement);
+//     return;
+//   }
+//   for (let i = 0; i < ratingCount; i++) {
+//     ratingElement.textContent += `★`;
+//   }
+// };
 
 export const sortObjWithStringVal = (booksArray, sortOrder, sortBy) => {
   console.log(sortOrder);
