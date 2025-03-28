@@ -31,7 +31,6 @@ const paginationContainer = document.getElementById("pagination-container");
 const root = document.querySelector(":root");
 
 async function fetchBooks(searchBookValue, limit, page) {
-  console.log("api call mmmm");
   const URL = `https://api.freeapi.app/api/v1/public/books?page=${
     page || `1`
   }&limit=${limit || `10`}&inc=${
@@ -70,13 +69,15 @@ const initialize = (searchBookValue = "", limit, page) => {
     book_container.textContent = "";
     let books = result?.data?.data;
     let paginationInfo = result?.data;
-    // console.log(books);
     renderBooks(books);
-    updatePaginationUI(paginationInfo);
+    updatePaginationUI(result);
   });
 };
 
-function updatePaginationUI(paginationInfo) {
+function updatePaginationUI(result) {
+  let books = result?.data?.data;
+  let paginationInfo = result?.data;
+
   let start =
     paginationInfo?.page === 1
       ? 1
@@ -89,8 +90,6 @@ function updatePaginationUI(paginationInfo) {
   if (Number(end) > Number(paginationInfo?.totalItems)) {
     end = paginationInfo?.totalItems;
   }
-
-  // console.log(paginationInfo?.page, start, end);
 
   if (
     Array.from(document.getElementsByClassName("pagination-range")).length > 0
@@ -105,8 +104,6 @@ function updatePaginationUI(paginationInfo) {
   paginationRange.textContent = `${start}-${end} of ${paginationInfo?.totalItems}`;
   paginationContainer.appendChild(paginationRange);
   addClassListsToElement(["pagination-range"], paginationRange);
-
-  // console.log(paginationContainer);
 
   if (
     Array.from(document.getElementsByClassName("next-page-button")).length > 0
@@ -153,52 +150,42 @@ function updatePaginationUI(paginationInfo) {
     const limit = itemsPerPageInput.value;
     initialize(search, limit, `${Number(paginationInfo?.page) - 1}`);
   });
+
+  basedOnSelect.addEventListener("change", () => {
+    book_container.textContent = "";
+    basedOnSelectValue = basedOnSelect.value;
+    const sortedBooks = sortObjWithStringVal(
+      books,
+      basedOnSelectValue,
+      sortingValue
+    );
+    renderBooks(sortedBooks);
+  });
+
+  sorting.addEventListener("change", function () {
+    book_container.textContent = "";
+    sortingValue = sorting.value;
+    const sortedBooks = sortObjWithStringVal(
+      books,
+      basedOnSelectValue,
+      sortingValue
+    );
+    renderBooks(sortedBooks);
+  });
 }
-
-basedOnSelect.addEventListener("change", () => {
-  book_container.textContent = "";
-  basedOnSelectValue = basedOnSelect.value;
-  const sortedBooks = sortObjWithStringVal(
-    books,
-    basedOnSelectValue,
-    sortingValue
-  );
-  renderBooks(sortedBooks);
-});
-
-sorting.addEventListener("change", function () {
-  book_container.textContent = "";
-  sortingValue = sorting.value;
-  const sortedBooks = sortObjWithStringVal(
-    books,
-    basedOnSelectValue,
-    sortingValue
-  );
-  renderBooks(sortedBooks);
-});
 
 const debouncedInitialize = debounce(initialize, 1000);
 
 searchBooksInput.addEventListener("keyup", () => {
   const searchBookValue = searchBooksInput.value;
 
-  debouncedInitialize(
-    searchBookValue,
-    itemsPerPageInput.value,
-    `${Number(paginationInfo?.page)}`
-  );
+  debouncedInitialize(searchBookValue, itemsPerPageInput.value, 1);
 });
 
 itemsPerPageInput.addEventListener("change", () => {
   const itemsPerPageInputVal = itemsPerPageInput.value;
-  console.log(itemsPerPageInputVal);
   setTimeout(
-    () =>
-      initialize(
-        searchBooksInput.value,
-        itemsPerPageInputVal,
-        `${Number(paginationInfo?.page)}`
-      ),
+    () => initialize(searchBooksInput.value, itemsPerPageInputVal, 1),
     0
   );
 });
